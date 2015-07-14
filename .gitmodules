@@ -1,0 +1,6 @@
+[submodule "submodule/openssl"]
+	path = submodule/openssl
+	url = https://github.com/openssl/openssl.git
+[submodule "submodule/polar"]
+	path = submodule/polar
+	url = https://github.com/ARMmbed/mbedtls.git

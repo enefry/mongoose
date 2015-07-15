@@ -2519,7 +2519,7 @@ int mg_url_decode(const char *src, size_t src_len, char *dst,
 
   dst[j] = '\0'; // Null-terminate the destination
 
-  return i >= src_len ? j : -1;
+  return i >= src_len ?(int)j : -1;
 }
 
 static int is_valid_http_method(const char *s) {
@@ -2726,7 +2726,7 @@ static int convert_uri_to_file_name(struct connection *conn, char *buf,
   // Perform virtual hosting rewrites
   if (rewrites != NULL && domain != NULL) {
     const char *colon = strchr(domain, ':');
-    size_t domain_len = colon == NULL ? strlen(domain) : colon - domain;
+    size_t domain_len = colon == NULL ? strlen(domain) : (size_t)(colon - domain);
 
     while ((rewrites = next_option(rewrites, &a, &b)) != NULL) {
       if (a.len > 1 && a.ptr[0] == '@' && a.len == domain_len + 1 &&

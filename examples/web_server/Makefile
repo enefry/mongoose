@@ -1,9 +1,6 @@
-# Copyright (c) 2014 Cesanta Software
-# All rights reserved
-
 PROG = web_server
-CFLAGS = -W -Wall -I../.. -g -O0  $(CFLAGS_EXTRA)
-SOURCES = $(PROG).c ../../mongoose.c
+SOURCES = $(PROG).c DataBuffer.c ../../mongoose.c
+CFLAGS = -W -Wall -I../.. $(CFLAGS_EXTRA)
 OPENSSL_FLAGS = -DNS_ENABLE_SSL -lssl
 
 # PolarSSL paths and flags
@@ -12,19 +9,22 @@ POLARSSLCOMPAT_PATH = ./../../../polar
 SOURCES_POLAR = $(SOURCES) $(POLARSSLCOMPAT_PATH)/polarssl_compat.c
 INCDIR_POLAR = -I$(POLARSSLCOMPAT_PATH) -I$(POLARSSL_PATH)/include
 LDFLAGS_POLAR = -L$(POLARSSL_PATH)/lib -lmbedtls
-CFLAGS_POLAR = $(CFLAGS) $(INCDIR_POLAR) -DNS_ENABLE_SSL
+CFLAGS_POLAR = $(CFLAGS) $(INCDIR_POLAR) -DMG_ENABLE_SSL
+
+
+all: $(PROG)
 
 $(PROG): $(SOURCES)
-	$(CC) -o $(PROG) $(SOURCES) $(CFLAGS)
+	$(CC) $(SOURCES) -o $@ $(CFLAGS)
 
 $(PROG).exe: $(SOURCES)
-	cl -Fo $(PROG) $(SOURCES) -nologo -MD -I../..
+	cl $(SOURCES) /I../.. /MD /Fe$@
 
 openssl:
 	$(CC) -o $(PROG) $(SOURCES) $(CFLAGS) $(OPENSSL_FLAGS)
 
 polarssl:
 	$(CC) -o $(PROG) $(SOURCES_POLAR) $(LDFLAGS_POLAR) $(CFLAGS_POLAR)
-
+	
 clean:
-	rm -rf $(PROG) *.exe *.dSYM *.obj *.exp .*o *.lib
+	rm -rf *.gc* *.dSYM *.exe *.obj *.o a.out $(PROG)

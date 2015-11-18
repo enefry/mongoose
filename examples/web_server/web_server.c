@@ -5,7 +5,7 @@
 #include "unistd.h"
 #include "DataBuffer.h"
 #include "stdio.h"
-static char *s_http_port = "80";
+static const char *s_http_port = "80";
 static struct mg_serve_http_opts s_http_server_opts;
 
 static DataBuffer document_root_str ;
@@ -249,7 +249,7 @@ void ReadConfigureFile(char* filePath)
             }
             DataBufferAppendChars (&dataBuffer,temp,length);
             const char* ptr =  DataBufferPtr (&dataBuffer);
-            unsigned int size = DataBufferSize(&dataBuffer);
+            int size = (int)DataBufferSize(&dataBuffer);
             int j = i;
             i = 0;
             for(;j<size;j++){

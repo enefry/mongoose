@@ -1,7 +1,7 @@
 PROG = web_server
 SOURCES = $(PROG).c DataBuffer.c ../../mongoose.c
 CFLAGS = -W -Wall -I../.. $(CFLAGS_EXTRA)
-OPENSSL_FLAGS = -DNS_ENABLE_SSL -lssl
+OPENSSL_FLAGS = -DMG_ENABLE_SSL -lssl
 
 # PolarSSL paths and flags
 POLARSSL_PATH = /usr/local

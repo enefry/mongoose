@@ -17,32 +17,33 @@ static in_addr_t s_our_ip_addr;
 static const char *s_listening_addr = "udp://:5533";
 
 static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
-  struct mg_dmg_message *msg;
-  struct mg_dmg_resource_record *rr;
-  struct mg_dmg_reply reply;
+  struct mg_dns_message *msg;
+  struct mg_dns_resource_record *rr;
+  struct mg_dns_reply reply;
   int i;
 
   switch (ev) {
-    case NS_DNS_MESSAGE:
-      msg = (struct mg_dmg_message *) ev_data;
-      reply = mg_dmg_create_reply(&nc->send_mbuf, msg);
+    case MG_DNS_MESSAGE:
+      msg = (struct mg_dns_message *) ev_data;
+      reply = mg_dns_create_reply(&nc->send_mbuf, msg);
 
       for (i = 0; i < msg->num_questions; i++) {
         rr = &msg->questions[i];
-        if (rr->rtype == NS_DNS_A_RECORD) {
-          mg_dmg_reply_record(&reply, rr, NULL, rr->rtype, 3600,
+        if (rr->rtype == MG_DNS_A_RECORD) {
+          mg_dns_reply_record(&reply, rr, NULL, rr->rtype, 3600,
                               &s_our_ip_addr, 4);
         }
       }
 
       /*
        * We don't set the error flag even if there were no answers
-       * maching the NS_DNS_A_RECORD query type.
-       * This indicates that we have (syntetic) answers for NS_DNS_A_RECORD.
+       * maching the MG_DNS_A_RECORD query type.
+       * This indicates that we have (syntetic) answers for MG_DNS_A_RECORD.
        * See http://goo.gl/QWvufr for a distinction between NXDOMAIN and NODATA.
        */
 
-      mg_dmg_send_reply(nc, &reply);
+      mg_dns_send_reply(nc, &reply);
+      nc->flags |= MG_F_SEND_AND_CLOSE;
       break;
   }
 }

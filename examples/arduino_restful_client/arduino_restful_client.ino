@@ -61,7 +61,7 @@ static uint8_t board_ip[] = {192, 168, 10, 177};
 #ifdef WIFI_CC3000
 static uint8_t subnet_mask[] = {255, 255, 255, 0};
 static uint8_t gateway[] = {192, 168, 10, 254};
-static uint8_t dmg_ip[] = {192, 168, 10, 254};
+static uint8_t dns_ip[] = {192, 168, 10, 254};
 
 static const char *wlan_ssid = "mynetwork";     
 static const char *wlan_pwd = "mypassword";
@@ -96,9 +96,9 @@ static void rfc_ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
         int len = get_data_to_send(buf, sizeof(buf));
         mg_printf(nc, "POST %s HTTP/1.0\r\nHost: %s\r\nContent-Lenght: %d"
                   "\r\n\r\n%s", s_request, s_target_address, len, buf);
-        nc->flags |= NSF_SEND_AND_CLOSE;
+        nc->flags |= MG_F_SEND_AND_CLOSE;
       } else {
-        nc->flags |= NSF_CLOSE_IMMEDIATELY;
+        nc->flags |= MG_F_CLOSE_IMMEDIATELY;
       }
       break;
     default:
@@ -117,7 +117,7 @@ void setup()
   avr_netinit(board_mac, board_ip);
 #elif defined(WIFI_CC3000)
   if (avr_netinit(wlan_ssid, wlan_pwd, wlan_security, IP2U32(board_ip), 
-              IP2U32(subnet_mask), IP2U32(gateway), IP2U32(dmg_ip)) != 0) {
+              IP2U32(subnet_mask), IP2U32(gateway), IP2U32(dns_ip)) != 0) {
     Serial.println("Initialization error, check network settings");
     return;
   };

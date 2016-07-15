@@ -5,13 +5,13 @@ all: $(PROG)
 
 ifeq ($(OS), Windows_NT)
 # TODO(alashkin): enable SSL in Windows
-CFLAGS += -lws2_32 -D_MG_PROVIDE_STRNLEN
+CFLAGS += -lws2_32
 CC = gcc
 else
 ifeq ($(SSL_LIB),openssl)
 CFLAGS += -DMG_ENABLE_SSL -lssl -lcrypto
 else ifeq ($(SSL_LIB), krypton)
-CFLAGS += -DMG_ENABLE_SSL ../../../krypton/krypton.c
+CFLAGS += -DMG_ENABLE_SSL -DMG_DISABLE_PFS ../../../krypton/krypton.c
 endif
 CFLAGS += -lpthread
 endif
